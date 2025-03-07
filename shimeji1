@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PurpleLink Simulator</title>
+    <style>
+        #shimeji {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            animation: move 5s infinite;
+        }
+        @keyframes move {
+            0% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div id="chat-container">
+        <!-- Chat messages go here -->
+    </div>
+    <img id="shimeji" src="path/to/shimeji.png" alt="Shimeji Character">
+</body>
+</html>
+
+
