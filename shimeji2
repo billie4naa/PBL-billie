@@ -1,0 +1,90 @@
+bash server :  python server.py
+bash client : python client.py
+
+client : import socket
+import tkinter as tk
+from tkinter import scrolledtext
+
+def send_message(event=None):
+    message = entry.get()
+    if message:
+        client_socket.send(message.encode('utf-8'))
+        entry.delete(0, tk.END)
+        receive_message()
+
+def receive_message():
+    try:
+        response = client_socket.recv(1024).decode('utf-8')
+        chat_area.config(state='normal')
+        chat_area.insert(tk.END, f"Shimeji Kucing: {response}\n")
+        chat_area.config(state='disabled')
+        chat_area.yview(tk.END)  # Scroll to the end
+    except:
+        pass
+
+def on_closing():
+    client_socket.close()
+    root.destroy()
+
+# Setup socket
+client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+client_socket.connect(('127.0.0.1', 9999))
+
+# Setup GUI
+root = tk.Tk()
+root.title("PurpleLink Simulator")
+
+chat_area = scrolledtext.ScrolledText(root, state='disabled', width=50, height=20)
+chat_area.pack(pady=10)
+
+entry = tk.Entry(root, width=50)
+entry.pack(pady=10)
+entry.bind("<Return>", send_message)
+
+send_button = tk.Button(root, text="Send", command=send_message)
+send_button.pack(pady=5)
+
+root.protocol("WM_DELETE_WINDOW", on_closing)
+
+root.mainloop()
+
+
+
+server :
+import socket
+import threading
+
+def handle_client(client_socket):
+    while True:
+        message = client_socket.recv(1024).decode('utf-8')
+        if not message:
+            break
+        print(f"Received: {message}")
+        
+        # Logika respons shimeji kucing
+        if "hai" in message.lower():
+            response = "Meow! Hai, ada yang bisa saya bantu?"
+        elif "apa kabar" in message.lower():
+            response = "Saya baik-baik saja! Bagaimana denganmu?"
+        elif "bantu" in message.lower():
+            response = "Tentu! Apa yang bisa saya bantu?"
+        else:
+            response = f"Shimeji Kucing: {message[::-1]}"  # Contoh respons default
+
+        client_socket.send(response.encode('utf-8'))
+    client_socket.close()
+
+def start_server():
+    server = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    server.bind(('0.0.0.0', 9999))
+    server.listen(5)
+    print("Server listening on port 9999")
+
+    while True:
+        client_socket, addr = server.accept()
+        print(f"Accepted connection from {addr}")
+        client_handler = threading.Thread(target=handle_client, args=(client_socket,))
+        client_handler.start()
+
+if __name__ == "__main__":
+    start_server()
